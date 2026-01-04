@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BNS Word Hunt</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: white;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 28px;
+        }
+
+        .game-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .info-item {
+            text-align: center;
+        }
+
+        .info-label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+        }
+
+        .info-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .clue-box {
+            background: #667eea;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .clue-box h2 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .clue-box .section {
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(9, 1fr);
+            gap: 5px;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+
+        .cell {
+            aspect-ratio: 1;
+            background: #f0f0f0;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            user-select: none;
+        }
+
+        .cell:hover {
+            background: #e0e0e0;
+            transform: scale(1.05);
+        }
+
+        .cell.selected {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .cell.correct {
+            background: #10b981;
+            color: white;
+            border-color: #10b981;
+            animation: bounce 0.5s;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        .selected-word {
+            text-align: center;
+            margin-bottom: 20px;
+            min-height: 30px;
+        }
+
+        .selected-word span {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+            letter-spacing: 2px;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .submit-btn {
+            background: #10b981;
+            color: white;
+        }
+
+        .submit-btn:hover {
+            background: #059669;
+            transform: translateY(-2px);
+        }
+
+        .skip-btn {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .skip-btn:hover {
+            background: #d97706;
+            transform: translateY(-2px);
+        }
+
+        .clear-btn {
+            background: #ef4444;
+            color: white;
+        }
+
+        .clear-btn:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+        }
+
+        .start-btn {
+            width: 100%;
+            background: #667eea;
+            color: white;
+            padding: 20px;
+            font-size: 20px;
+        }
+
+        .start-btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+
+        .result-screen {
+            text-align: center;
+        }
+
+        .result-screen h2 {
+            color: #667eea;
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+
+        .result-score {
+            font-size: 48px;
+            font-weight: bold;
+            color: #10b981;
+            margin-bottom: 20px;
+        }
+
+        .found-words {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .found-words h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .found-word-item {
+            padding: 5px 0;
+            color: #333;
+        }
+
+        .start-screen {
+            text-align: center;
+        }
+
+        .start-screen h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+
+        .instructions {
+            text-align: left;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .instructions li {
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 BNS Word Hunt</h1>
+        
+        <div id="startScreen" class="start-screen">
+            <h2>How to Play</h2>
+            <div class="instructions">
+                <ol>
+                    <li>First, memorize the BNS section numbers and their offenses (optional)</li>
+                    <li>You'll see a BNS section number as a clue</li>
+                    <li>Find and click the letters in the 9×9 grid to spell the corresponding offense</li>
+                    <li>Click "Submit" to check your answer</li>
+                    <li>Can't find it? Click "Skip" to move to the next clue</li>
+                    <li>You have 5 minutes total (including memorization time)</li>
+                </ol>
+            </div>
+            <button class="start-btn" onclick="showMemorizeScreen()">Continue to Memorize</button>
+        </div>
+
+        <div id="memorizeScreen" class="hidden start-screen">
+            <h2>Memorize the Sections</h2>
+            <p style="color: #666; margin-bottom: 15px;">You have up to 2 minutes to memorize. Click "Skip" to start playing and save time!</p>
+            <div class="game-info" style="margin-bottom: 20px;">
+                <div class="info-item">
+                    <div class="info-label">Total Time Left</div>
+                    <div class="info-value" id="memorizeTimer">5:00</div>
+                </div>
+            </div>
+            <div class="instructions" style="max-height: 400px; overflow-y: auto;">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background: #667eea; color: white;">
+                            <th style="padding: 10px; text-align: left;">Section</th>
+                            <th style="padding: 10px; text-align: left;">Offense</th>
+                        </tr>
+                    </thead>
+                    <tbody id="memorizeList"></tbody>
+                </table>
+            </div>
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button class="skip-btn" style="flex: 1;" onclick="startGame()">Skip & Start Game</button>
+                <button class="start-btn" style="flex: 1;" onclick="startGame()">Start Game</button>
+            </div>
+        </div>
+
+        <div id="gameScreen" class="hidden">
+            <div class="game-info">
+                <div class="info-item">
+                    <div class="info-label">Time</div>
+                    <div class="info-value" id="timer">2:00</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Found</div>
+                    <div class="info-value" id="score">0</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Skipped</div>
+                    <div class="info-value" id="skipped">0</div>
+                </div>
+            </div>
+
+            <div class="clue-box">
+                <h2>Find the offense for:</h2>
+                <div class="section" id="clue">Section 77</div>
+            </div>
+
+            <div class="selected-word">
+                <span id="selectedWord"></span>
+            </div>
+
+            <div class="grid" id="grid"></div>
+
+            <div class="buttons">
+                <button class="clear-btn" onclick="clearSelection()">Clear</button>
+                <button class="skip-btn" onclick="skipWord()">Skip</button>
+                <button class="submit-btn" onclick="submitWord()">Submit</button>
+            </div>
+        </div>
+
+        <div id="resultScreen" class="hidden result-screen">
+            <h2>Game Over!</h2>
+            <div class="result-score" id="finalScore">0</div>
+            <p style="margin-bottom: 20px; color: #666;">Words Found</p>
+            <div class="found-words" id="foundWords"></div>
+            <button class="start-btn" onclick="location.reload()">Play Again</button>
+        </div>
+    </div>
+
+    <script>
+        const ipcData = {
+            77: 'VOYEURISM', 78: 'STALKING', 82: 'BIGAMY', 86: 'CRUELTY',
+            88: 'MISCARRIAGE', 137: 'KIDNAPPING', 101: 'MURDER', 100: 'CULPABLE',
+            114: 'HURT', 128: 'FORCE', 130: 'ASSAULT', 138: 'ABDUCTION',
+            143: 'TRAFFICKING', 170: 'BRIBERY', 191: 'RIOTING', 270: 'NUISANCE',
+            276: 'ADULTERATION', 296: 'OBSCENE', 303: 'THEFT', 304: 'SNATCHING',
+            308: 'EXTORTION', 309: 'ROBBERY', 310: 'DACOITY', 318: 'CHEATING',
+            324: 'MISCHIEF', 329: 'TRESPASS', 336: 'FORGERY', 351: 'INTIMIDATION',
+            356: 'DEFAMATION'
+        };
+
+        let grid = [];
+        let selectedCells = [];
+        let currentSection = null;
+        let currentWord = '';
+        let score = 0;
+        let skippedCount = 0;
+        let foundWords = [];
+        let usedSections = [];
+        let timerInterval;
+        let totalTimeLeft = 300; // 5 minutes total
+        let memorizeTimerInterval;
+        let isMemorizing = true;
+
+        function showMemorizeScreen() {
+            document.getElementById('startScreen').classList.add('hidden');
+            document.getElementById('memorizeScreen').classList.remove('hidden');
+            
+            const listEl = document.getElementById('memorizeList');
+            const sections = Object.keys(ipcData).sort((a, b) => a - b);
+            listEl.innerHTML = sections.map(section => 
+                `<tr style="border-bottom: 1px solid #eee;">
+                    <td style="padding: 8px; font-weight: bold; color: #667eea;">${section}</td>
+                    <td style="padding: 8px;">${ipcData[section]}</td>
+                </tr>`
+            ).join('');
+            
+            startMasterTimer();
+        }
+
+        function startMasterTimer() {
+            memorizeTimerInterval = setInterval(() => {
+                totalTimeLeft--;
+                const minutes = Math.floor(totalTimeLeft / 60);
+                const seconds = totalTimeLeft % 60;
+                const timeDisplay = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                
+                if (isMemorizing) {
+                    document.getElementById('memorizeTimer').textContent = timeDisplay;
+                    // Auto-start game after 2 minutes of memorizing (or when time runs out)
+                    if (totalTimeLeft <= 180) { // 5 min - 2 min = 3 min left
+                        startGame();
+                    }
+                } else {
+                    document.getElementById('timer').textContent = timeDisplay;
+                }
+                
+                if (totalTimeLeft <= 0) {
+                    endGame();
+                }
+            }, 1000);
+        }
+
+        function generateGrid() {
+            const allWords = Object.values(ipcData);
+            const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            grid = [];
+            
+            // First, ensure we have enough letters for each word
+            const letterPool = [];
+            
+            // Add all letters from all offense words to ensure they're available
+            allWords.forEach(word => {
+                for (let char of word) {
+                    letterPool.push(char);
+                }
+            });
+            
+            // Shuffle the letter pool
+            for (let i = letterPool.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [letterPool[i], letterPool[j]] = [letterPool[j], letterPool[i]];
+            }
+            
+            // Fill grid with letters from pool first
+            for (let i = 0; i < 81 && letterPool.length > 0; i++) {
+                if (Math.random() < 0.7) {
+                    grid.push(letterPool.pop());
+                } else {
+                    grid.push(letters[Math.floor(Math.random() * letters.length)]);
+                }
+            }
+            
+            // Fill remaining cells with random letters
+            while (grid.length < 81) {
+                grid.push(letters[Math.floor(Math.random() * letters.length)]);
+            }
+            
+            // Final shuffle of the entire grid
+            for (let i = grid.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [grid[i], grid[j]] = [grid[j], grid[i]];
+            }
+        }
+
+        function renderGrid() {
+            const gridEl = document.getElementById('grid');
+            gridEl.innerHTML = '';
+            grid.forEach((letter, index) => {
+                const cell = document.createElement('div');
+                cell.className = 'cell';
+                cell.textContent = letter;
+                cell.onclick = () => selectCell(index);
+                gridEl.appendChild(cell);
+            });
+        }
+
+        function selectCell(index) {
+            const cells = document.querySelectorAll('.cell');
+            if (selectedCells.includes(index)) {
+                const pos = selectedCells.indexOf(index);
+                selectedCells.splice(pos, 1);
+                cells[index].classList.remove('selected');
+            } else {
+                selectedCells.push(index);
+                cells[index].classList.add('selected');
+            }
+            updateSelectedWord();
+        }
+
+        function updateSelectedWord() {
+            currentWord = selectedCells.map(i => grid[i]).join('');
+            document.getElementById('selectedWord').textContent = currentWord;
+        }
+
+        function clearSelection() {
+            selectedCells = [];
+            currentWord = '';
+            document.querySelectorAll('.cell').forEach(cell => {
+                cell.classList.remove('selected');
+            });
+            updateSelectedWord();
+        }
+
+        function getRandomSection() {
+            const sections = Object.keys(ipcData).filter(s => !usedSections.includes(s));
+            if (sections.length === 0) {
+                endGame();
+                return null;
+            }
+            return sections[Math.floor(Math.random() * sections.length)];
+        }
+
+        function setNewClue() {
+            const section = getRandomSection();
+            if (!section) return;
+            currentSection = section;
+            document.getElementById('clue').textContent = `Section ${section}`;
+            clearSelection();
+        }
+
+        function submitWord() {
+            if (!currentWord) return;
+            
+            const correctWord = ipcData[currentSection];
+            if (currentWord.toUpperCase() === correctWord) {
+                score++;
+                document.getElementById('score').textContent = score;
+                foundWords.push({ section: currentSection, word: correctWord });
+                usedSections.push(currentSection);
+                
+                selectedCells.forEach(i => {
+                    document.querySelectorAll('.cell')[i].classList.add('correct');
+                });
+                
+                setTimeout(() => {
+                    setNewClue();
+                    document.querySelectorAll('.cell').forEach(cell => {
+                        cell.classList.remove('correct');
+                    });
+                }, 800);
+            } else {
+                clearSelection();
+            }
+        }
+
+        function skipWord() {
+            skippedCount++;
+            document.getElementById('skipped').textContent = skippedCount;
+            usedSections.push(currentSection);
+            setNewClue();
+        }
+
+        function startTimer() {
+            // Timer is now handled by startMasterTimer
+        }
+
+        function endGame() {
+            clearInterval(memorizeTimerInterval);
+            clearInterval(timerInterval);
+            document.getElementById('gameScreen').classList.add('hidden');
+            document.getElementById('resultScreen').classList.remove('hidden');
+            document.getElementById('finalScore').textContent = score;
+            
+            const foundWordsEl = document.getElementById('foundWords');
+            if (foundWords.length === 0) {
+                foundWordsEl.innerHTML = '<p style="text-align: center; color: #999;">No words found</p>';
+            } else {
+                foundWordsEl.innerHTML = '<h3>Words You Found:</h3>' + 
+                    foundWords.map(w => 
+                        `<div class="found-word-item">Section ${w.section}: ${w.word}</div>`
+                    ).join('');
+            }
+        }
+
+        function startGame() {
+            isMemorizing = false;
+            document.getElementById('startScreen').classList.add('hidden');
+            document.getElementById('memorizeScreen').classList.add('hidden');
+            document.getElementById('gameScreen').classList.remove('hidden');
+            generateGrid();
+            renderGrid();
+            setNewClue();
+            
+            // Update timer display immediately
+            const minutes = Math.floor(totalTimeLeft / 60);
+            const seconds = totalTimeLeft % 60;
+            document.getElementById('timer').textContent = 
+                `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        }
+    </script>
+</body>
+</html>
