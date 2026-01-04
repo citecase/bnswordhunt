@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -32,7 +32,7 @@
 
         h1 {
             text-align: center;
-            color: #667eea;
+            color: #000;
             margin-bottom: 20px;
             font-size: 28px;
         }
@@ -59,11 +59,11 @@
         .info-value {
             font-size: 24px;
             font-weight: bold;
-            color: #667eea;
+            color: #000;
         }
 
         .clue-box {
-            background: #667eea;
+            background: #000;
             color: white;
             padding: 20px;
             border-radius: 10px;
@@ -110,15 +110,15 @@
         }
 
         .cell.selected {
-            background: #667eea;
+            background: #000;
             color: white;
-            border-color: #667eea;
+            border-color: #000;
         }
 
         .cell.correct {
-            background: #10b981;
+            background: #000;
             color: white;
-            border-color: #10b981;
+            border-color: #000;
             animation: bounce 0.5s;
         }
 
@@ -136,7 +136,7 @@
         .selected-word span {
             font-size: 24px;
             font-weight: bold;
-            color: #667eea;
+            color: #000;
             letter-spacing: 2px;
         }
 
@@ -158,45 +158,45 @@
         }
 
         .submit-btn {
-            background: #10b981;
+            background: #000;
             color: white;
         }
 
         .submit-btn:hover {
-            background: #059669;
+            background: #333;
             transform: translateY(-2px);
         }
 
         .skip-btn {
-            background: #f59e0b;
+            background: #666;
             color: white;
         }
 
         .skip-btn:hover {
-            background: #d97706;
+            background: #555;
             transform: translateY(-2px);
         }
 
         .clear-btn {
-            background: #ef4444;
+            background: #999;
             color: white;
         }
 
         .clear-btn:hover {
-            background: #dc2626;
+            background: #888;
             transform: translateY(-2px);
         }
 
         .start-btn {
             width: 100%;
-            background: #667eea;
+            background: #000;
             color: white;
             padding: 20px;
             font-size: 20px;
         }
 
         .start-btn:hover {
-            background: #5568d3;
+            background: #333;
             transform: translateY(-2px);
         }
 
@@ -205,7 +205,7 @@
         }
 
         .result-screen h2 {
-            color: #667eea;
+            color: #000;
             font-size: 32px;
             margin-bottom: 20px;
         }
@@ -213,7 +213,7 @@
         .result-score {
             font-size: 48px;
             font-weight: bold;
-            color: #10b981;
+            color: #000;
             margin-bottom: 20px;
         }
 
@@ -226,7 +226,7 @@
         }
 
         .found-words h3 {
-            color: #667eea;
+            color: #000;
             margin-bottom: 10px;
         }
 
@@ -240,7 +240,7 @@
         }
 
         .start-screen h2 {
-            color: #667eea;
+            color: #000;
             margin-bottom: 20px;
         }
 
@@ -259,6 +259,29 @@
 
         .hidden {
             display: none;
+        }
+
+        .feedback-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #000;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 30px;
+            border: none;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+
+        .feedback-btn:hover {
+            background: #333;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
         }
     </style>
 </head>
@@ -293,7 +316,7 @@
             <div class="instructions" style="max-height: 400px; overflow-y: auto;">
                 <table style="width: 100%; border-collapse: collapse;">
                     <thead>
-                        <tr style="background: #667eea; color: white;">
+                        <tr style="background: #000; color: white;">
                             <th style="padding: 10px; text-align: left;">Section</th>
                             <th style="padding: 10px; text-align: left;">Offense</th>
                         </tr>
@@ -350,6 +373,8 @@
         </div>
     </div>
 
+    <button class="feedback-btn" onclick="window.open('https://tally.so/r/J9pD0d', '_blank')">💬 Give Feedback</button>
+
     <script>
         const ipcData = {
             77: 'VOYEURISM', 78: 'STALKING', 82: 'BIGAMY', 86: 'CRUELTY',
@@ -383,7 +408,7 @@
             const sections = Object.keys(ipcData).sort((a, b) => a - b);
             listEl.innerHTML = sections.map(section => 
                 `<tr style="border-bottom: 1px solid #eee;">
-                    <td style="padding: 8px; font-weight: bold; color: #667eea;">${section}</td>
+                    <td style="padding: 8px; font-weight: bold; color: #000;">${section}</td>
                     <td style="padding: 8px;">${ipcData[section]}</td>
                 </tr>`
             ).join('');
